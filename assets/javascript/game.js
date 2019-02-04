@@ -1,39 +1,6 @@
-var selectableWords =         
-    [
-     "guitar",
-     "drum",
-     "bass",
-     "violin",
-     "cello",
-     "trombone",
-     "tuba",
-     "xylophone",
-     "banjo",
-     "ukulele",
-     "harmonica",
-     "accordian",
-     "piano",
-     "mandolin",
-     "trumpet",
-     "oboe",
-     "flute",
-     "saxophone",
-     "bassoon",
-     "clarinet",
-     "organ",
-     "harp",
-     "viola",
-     "bagpipes",
-     "marimba",
-     "tambourine",
-     "sitar",
-     "ocarina",
-     "theremin",
-     "didgeridoo"
-    
-    ];
+var instrumentList = ["guitar", "drum", "bass", "violin", "cello", "trombone", "tuba", "xylophone", "banjo", "ukulele", "harmonica", "accordian", "piano", "mandolin", "trumpet", "oboe", "flute", "saxophone", "bassoon", "clarinet", "organ", "harp", "viola", "bagpipes", "marimba", "tambourine", "sitar", "ocarina", "theremin", "didgeridoo"];
 
-const maxTries = 10;            
+const maximumTries = 10;            
 
 let guessedLetters = [];        
 let currentWordIndex;           
@@ -44,18 +11,18 @@ let hasFinished = false;
 let wins = 0;                   
 
 
-const resetGame = () => {
-    remainingGuesses = maxTries;
+const newGame = () => {
+    remainingGuesses = maximumTries;
     gameStarted = false;
 
-    currentWordIndex = Math.floor(Math.random() * (selectableWords.length));
+    currentWordIndex = Math.floor(Math.random() * (instrumentList.length));
 
     guessedLetters = [];
     guessingWord = [];
 
-    document.getElementById("hangmanImage").src = "";
+    document.getElementById("startingImage").src ="https://s3.amazonaws.com/spoonflower/public/design_thumbnails/0596/0887/rOrchestra_preview.png";
 
-    for (var i = 0; i < selectableWords[currentWordIndex].length; i++) {
+    for (var i = 0; i < instrumentList[currentWordIndex].length; i++) {
         guessingWord.push("_");
     }
     
@@ -63,11 +30,11 @@ const resetGame = () => {
     document.getElementById("gameover-image").style.cssText = "display: none";
     document.getElementById("youwin-image").style.cssText = "display: none";
    
-    updateDisplay();
+    refreshDisplay();
 };
 
 
-const updateDisplay = () => {
+const refreshDisplay = () => {
 
     document.getElementById("totalWins").innerText = wins;
     document.getElementById("currentWord").innerText = "";
@@ -87,24 +54,24 @@ const updateDisplay = () => {
 };
 
 
-const updateHangmanImage = () => {
-    document.getElementById("hangmanImage").src = "assets/images/" + (maxTries - remainingGuesses) + ".png";
+const updateImage = () => {
+    document.getElementById("startingImage").src ="https://s3.amazonaws.com/spoonflower/public/design_thumbnails/0596/0887/rOrchestra_preview.png" + (maximumTries - remainingGuesses) + ".png";
 };
 
 document.onkeydown = function(event) {
    
     if(hasFinished) {
-        resetGame();
+        newGame();
         hasFinished = false;
     } else {
        
         if(event.keyCode >= 65 && event.keyCode <= 90) {
-            makeGuess(event.key.toLowerCase());
+            guess(event.key.toLowerCase());
         }
     }
 };
 
-const makeGuess = letter => {
+const guess = letter => {
     if (remainingGuesses > 0) {
         if (!gameStarted) {
             gameStarted = true;
@@ -112,27 +79,27 @@ const makeGuess = letter => {
        
         if (guessedLetters.indexOf(letter) === -1) {
             guessedLetters.push(letter);
-            evaluateGuess(letter);
+            checkGuess(letter);
         }
     }
     
-    updateDisplay();
+    refreshDisplay();
     checkWin();
 };
 
-const evaluateGuess = letter => {
+const checkGuess = letter => {
     
     var positions = [];
     
-    for (var i = 0; i < selectableWords[currentWordIndex].length; i++) {
-        if(selectableWords[currentWordIndex][i] === letter) {
+    for (var i = 0; i < instrumentList[currentWordIndex].length; i++) {
+        if(instrumentList[currentWordIndex][i] === letter) {
             positions.push(i);
         }
     }
     
     if (positions.length <= 0) {
         remainingGuesses--;
-        updateHangmanImage();
+        updateImage();
     } else {
         
         for(var i = 0; i < positions.length; i++) {
